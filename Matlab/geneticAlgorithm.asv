@@ -15,15 +15,15 @@ for i = 1:n
 end
 
 for i= 1:it
-    fprintf('====== Iteration %d ====== \n', i)
+    %fprintf('====== Iteration %d ====== \n', i)
     Generation = sortrows(Generation,3);
     disp('Current Generation:');
     disp(Generation');
     Parents = Generation(1:nS, :);
-    disp('Selected Possible Parents:');
+    disp('Selected Parents:');
     disp(Parents');
 
-    kids = zeros(ChildSize, 3);
+    kids = zeros(nS, 3);
     
     % Create childSize children from the possible parents.
     for j=1:ChildSize
@@ -45,15 +45,14 @@ for i= 1:it
         Mutation2 = mutation(mut);
         
         % The child is generated
-        value1 = Parents(R1, Index1) + Mutation1;
-        value2 = Parents(R2, Index2) + Mutation1;
-        kids(j, Index1) = value1;
-        kids(j, Index2) = value2;
+        value1 = Parents(R1, index1) + Mutation1;
+        value2 = Parents(R2, index2) + Mutation1;
+        kids(j, index1) = value1;
+        kids(j, index2) = value2;
         kids(j, 3) = cost([value1 value2], Sites);
     end
     
-    disp('Created Children:');
-    disp(kids');
+    
     
     % Select all the Chromosomes except the possible parents
     Survivors = Generation(nS + 1, :);
@@ -65,8 +64,7 @@ for i= 1:it
     Surv = zeros(NumSurv, 3);
     
     for j = 1: NumSurv 
-        [x y ] = size(Survivors);
-        Index = randi(x);
+        Index = randi(length(Survivors));
         Survivor = Survivors(Index, :);
         
         Mutation1 = mutation(mut);
@@ -80,8 +78,6 @@ for i= 1:it
         
         Surv(j, :) = Survivor;
     end
-    disp('Selected and mutated Survivors:');
-    disp(Surv');
     Generation = [Parents ; kids ; Surv];
  
 end
