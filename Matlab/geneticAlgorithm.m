@@ -1,13 +1,13 @@
-function [ output_args ] = geneticAlgorithm( n, nS, ChildSize, mut, it )
+function [  ] = geneticAlgorithm(PopulationSize, PSize, ChildSize, mut, it)
 % runs the genetic algorithm
 
 % Preallocate for performance
-Generation = zeros(n,3);
+Generation = zeros(PopulationSize,3);
 % Get all the possible building sites
 Sites = calculateGrid();
 
 %initialize the population with n chromosomes
-for i = 1:n
+for i = 1:PopulationSize
     rndm1 = randi(10);
     rndm2 = randi(5);
     c = cost([rndm1 rndm2], Sites);
@@ -15,11 +15,13 @@ for i = 1:n
 end
 
 for i= 1:it
-    fprintf('====== Iteration %d ====== \n', i)
+    fprintf('========================================== Iteration %d ========================================== \n', i);
     Generation = sortrows(Generation,3);
     disp('Current Generation:');
     disp(Generation');
-    Parents = Generation(1:nS, :);
+    disp('Best of Current Generation:');
+    disp(Generation(1,:))
+    Parents = Generation(1:PSize, :);
     disp('Selected Possible Parents:');
     disp(Parents');
 
@@ -28,12 +30,12 @@ for i= 1:it
     % Create childSize children from the possible parents.
     for j=1:ChildSize
         % Used to select the two parents;
-        R1 = floor(mod( exprnd(nS/4), nS -1) +1);
-        R2 = floor(mod( exprnd(nS/4), nS -1) +1);
+        R1 = floor(mod( exprnd(PSize/4), PSize -1) +1);
+        R2 = floor(mod( exprnd(PSize/4), PSize -1) +1);
         
         % Make sure that the parents are two different chromosomes
         while R1 == R2
-            R2 = floor(mod( exprnd(nS/4), nS -1) +1);
+            R2 = floor(mod( exprnd(PSize/4), PSize -1) +1);
         end
 
         % index of the two genes to use with both parents
@@ -56,10 +58,10 @@ for i= 1:it
     disp(kids');
     
     % Select all the Chromosomes except the possible parents
-    Survivors = Generation(nS + 1, :);
+    Survivors = Generation(PSize + 1, :);
     
     % let some survive and mutate them.
-    NumSurv = n - nS - ChildSize;
+    NumSurv = PopulationSize - PSize - ChildSize;
     
     %Preallocate for performance
     Surv = zeros(NumSurv, 3);
@@ -83,6 +85,7 @@ for i= 1:it
     disp('Selected and mutated Survivors:');
     disp(Surv');
     Generation = [Parents ; kids ; Surv];
+    fprintf('================================================================================================== \n \n', i)
  
 end
 

@@ -10,7 +10,7 @@ L = Sites;
 % Iterate over all the locations
 for i= 1:length(L)
     % add the cost of each location to the total cost
-    C = C + minimalDistance(P, L(i,:));
+    C = C + euclidianDistance(P, L(i,:));
 end
 
 end
