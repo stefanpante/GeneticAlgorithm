@@ -1,8 +1,9 @@
 function [ ] = pso( omg, phii, phik, numPart,it )
 % preallocate for efficiency
 best_position = [ 100, 100, 500];
-p_posVel = zeros(numPart,7);
+particles = zeros(numPart,7);
 locations = calculateGrid();
+text = 'position i\nposition j\nbest position i\nbest position j\nvelocity i\nvelocity j\ncost';
 
 % Initial positions for the particles and the global best position
 for k=1:numPart
@@ -15,29 +16,31 @@ for k=1:numPart
     if co < best_position(3);
         best_position = [i j co];
     end
-    p_posVel(k,:) = [i j i j v_i v_j co];
+    particles(k,:) = [i j i j v_i v_j co];
 end
 
 % start the iteration
 for k=1:it
-    fprintf('========================================== Iteration %d ========================================== \n', i);
+    fprintf('========================================== Iteration %d ========================================== \n', k);
     disp('best position for this generation:');
     disp(best_position);
+    fprintf(text);
+    disp(particles');
     for l=1:numPart
         R1 = rand();
         R2 = rand();
         
-        i   = p_posVel(l,1);
-        j   = p_posVel(l,2); 
-        b_i = p_posVel(l,3);
-        b_j = p_posVel(l,4);
-        v_i = p_posVel(l,5);
-        v_j = p_posVel(l,6); 
+        i   = particles(l,1);
+        j   = particles(l,2); 
+        b_i = particles(l,3);
+        b_j = particles(l,4);
+        v_i = particles(l,5);
+        v_j = particles(l,6); 
         
         v_i = omg * v_i + phii * R1 *( b_i - i) + phik * R2*( best_position(1) - i);
         v_j = omg * v_j + phii * R1 *( b_j - j) + phik * R2*( best_position(2) - j);
-        i = i + v_i;
-        j = j + v_j;
+        i = (i + v_i);
+        j = (j + v_j);
         
         cost_new = cost([i j], locations);
         cost_best = cost([b_i, b_j], locations);
@@ -48,8 +51,10 @@ for k=1:it
         end
         
         if cost_new < best_position(3)
-            best_position = [i j cost_new]
+            best_position = [i j cost_new];
         end
+        
+        particles(k,:) = [i j b_i b_j v_i v_j cost_new];
         
     end
 end
