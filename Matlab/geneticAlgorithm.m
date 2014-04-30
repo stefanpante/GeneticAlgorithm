@@ -48,10 +48,10 @@ for i= 1:it
         
         % The child is generated
         value1 = Parents(R1, Index1) + Mutation1;
-        value2 = Parents(R2, Index2) + Mutation1;
+        value2 = Parents(R2, Index2) + Mutation2;
         kids(j, Index1) = value1;
         kids(j, Index2) = value2;
-        kids(j, 3) = cost([value1 value2], Sites);
+        kids(j, 3) = cost([kids(j, 1) kids(j,2)], Sites);
     end
     
     disp('Created Children:');
@@ -85,7 +85,7 @@ for i= 1:it
     disp('Selected and mutated Survivors:');
     disp(Surv');
     Generation = [Parents ; kids ; Surv];
-    fprintf('================================================================================================== \n \n', i)
+    fprintf('============================================================================================== \n \n', i)
  
 end
 
